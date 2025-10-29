@@ -5869,7 +5869,22 @@ run(function()
 			end
 		end
 	end
-	
+	run(function()
+	local NothingModule
+
+	NothingModule = vape.Categories.Utility:CreateModule({
+		Name = 'Nothing',
+		Function = function(callback)
+			if callback then
+				-- enabled, but does nothing
+			else
+				-- disabled, still does nothing
+			end
+		end,
+		Tooltip = 'Does absolutely nothing. Placeholder module.'
+	})
+end)
+
 	AutoBank = vape.Categories.Inventory:CreateModule({
 		Name = 'AutoBank',
 		Function = function(callback)
