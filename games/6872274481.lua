@@ -1236,7 +1236,7 @@ run(function()
 				end))
 			end
 		end,
-		Tooltip = 'Smoothly aims to closest valid target with sword'
+		Tooltip = 'SLAMS YOU'
 	})
 	Targets = AimAssist:CreateTargets({
 		Players = true,
