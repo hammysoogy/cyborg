@@ -4975,36 +4975,75 @@ run(function()
 end)
 	
 run(function()
-	local ShopTierBypass
-	local tiered, nexttier = {}, {}
-	
-	ShopTierBypass = vape.Categories.Utility:CreateModule({
-		Name = 'ShopTierBypass',
+	local Players = game:GetService("Players")
+	local UserInputService = game:GetService("UserInputService")
+	local RunService = game:GetService("RunService")
+
+	local infHoldConn -- heartbeat connection for "fly while space held"
+	local jumpReqConn  -- JumpRequest connection
+
+	-- Replace category if you don't have vape.Categories.Utility; adjust as needed
+	local category = (vape and vape.Categories and vape.Categories.Utility) and vape.Categories.Utility or vape.Categories.Blatant
+
+	category:CreateModule({
+		Name = 'InfJump',
 		Function = function(callback)
 			if callback then
-				repeat task.wait() until store.shopLoaded or not ShopTierBypass.Enabled
-				if ShopTierBypass.Enabled then
-					for _, v in bedwars.Shop.ShopItems do
-						tiered[v] = v.tiered
-						nexttier[v] = v.nextTier
-						v.nextTier = nil
-						v.tiered = nil
+				-- Enabled: connect jump handler & heartbeat for flight
+				local localPlayer = Players.LocalPlayer
+
+				-- jump request: allow jump anytime and give a consistent upward boost
+				jumpReqConn = UserInputService.JumpRequest:Connect(function()
+					if not localPlayer then return end
+					local char = localPlayer.Character
+					if not char then return end
+					local humanoid = char:FindFirstChildOfClass("Humanoid")
+					local hrp = char:FindFirstChild("HumanoidRootPart")
+					if humanoid and hrp then
+						-- Force a jump state and give a little upward velocity
+						pcall(function()
+							humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+							hrp.Velocity = Vector3.new(hrp.Velocity.X, 60, hrp.Velocity.Z)
+						end)
 					end
-				end
+				end)
+
+				-- Heartbeat: while space is held, continuously apply upward velocity (simple fly)
+				infHoldConn = RunService.Heartbeat:Connect(function()
+					if not localPlayer then return end
+					local char = localPlayer.Character
+					if not char then return end
+					local hrp = char:FindFirstChild("HumanoidRootPart")
+					if not hrp then return end
+
+					-- If player is holding Space, apply upward force; if holding LeftControl/C (crouch) apply downward
+					if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+						-- Cap the upward velocity to avoid crazy speeds
+						local vy = math.clamp(hrp.Velocity.Y + 6, -40, 80)
+						hrp.Velocity = Vector3.new(hrp.Velocity.X, vy, hrp.Velocity.Z)
+					elseif UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) or UserInputService:IsKeyDown(Enum.KeyCode.C) then
+						-- gentle downward control
+						local vy = math.clamp(hrp.Velocity.Y - 6, -120, 80)
+						hrp.Velocity = Vector3.new(hrp.Velocity.X, vy, hrp.Velocity.Z)
+					end
+				end)
+
 			else
-				for i, v in tiered do
-					i.tiered = v
+				-- Disabled: disconnect everything and clean up
+				if jumpReqConn then
+					jumpReqConn:Disconnect()
+					jumpReqConn = nil
 				end
-				for i, v in nexttier do
-					i.nextTier = v
+				if infHoldConn then
+					infHoldConn:Disconnect()
+					infHoldConn = nil
 				end
-				table.clear(nexttier)
-				table.clear(tiered)
 			end
 		end,
-		Tooltip = 'Lets you buy things like armor early.'
+		Tooltip = 'Infinite-jump + hold Space to float up / Ctrl to float down.'
 	})
 end)
+
 	
 run(function()
 	local StaffDetector
