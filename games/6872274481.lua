@@ -5341,29 +5341,43 @@ run(function()
 		end
 	end
 	
-	AutoTool = vape.Categories.World:CreateModule({
-		Name = 'AutoTool',
+	run(function()
+	local InfJump
+	
+	InfJump = vape.Categories.Utility:CreateModule({
+		Name = 'InfJump',
 		Function = function(callback)
 			if callback then
-				event = Instance.new('BindableEvent')
-				AutoTool:Clean(event)
-				AutoTool:Clean(event.Event:Connect(function()
-					contextActionService:CallFunction('block-break', Enum.UserInputState.Begin, newproxy(true))
-				end))
-				old = bedwars.BlockBreaker.hitBlock
-				bedwars.BlockBreaker.hitBlock = function(self, maid, raycastparams, ...)
-					local block = self.clientManager:getBlockSelector():getMouseInfo(1, {ray = raycastparams})
-					if switchHotbarItem(block and block.target and block.target.blockInstance or nil) then return end
-					return old(self, maid, raycastparams, ...)
+				_G.JumpHeight = 50
+
+				local function Action(Object, Function)
+					if Object ~= nil then
+						Function(Object)
+					end
 				end
+
+				InfJump.Connection = UIS.InputBegan:Connect(function(UserInput)
+					if UserInput.UserInputType == Enum.UserInputType.Keyboard and UserInput.KeyCode == Enum.KeyCode.Space then
+						Action(Player.Character and Player.Character:FindFirstChildOfClass("Humanoid"), function(self)
+							if self:GetState() == Enum.HumanoidStateType.Jumping or self:GetState() == Enum.HumanoidStateType.Freefall then
+								Action(self.Parent:FindFirstChild("HumanoidRootPart"), function(hrp)
+									hrp.Velocity = Vector3.new(0, _G.JumpHeight, 0)
+								end)
+							end
+						end)
+					end
+				end)
 			else
-				bedwars.BlockBreaker.hitBlock = old
-				old = nil
+				if InfJump.Connection then
+					InfJump.Connection:Disconnect()
+					InfJump.Connection = nil
+				end
 			end
 		end,
-		Tooltip = 'Automatically selects the correct tool'
+		Tooltip = 'Lets you infinitely jump in mid-air.'
 	})
 end)
+
 	
 run(function()
 	local BedProtector
@@ -8556,4 +8570,41 @@ run(function()
 		Tooltip = 'Makes you continuously bounce up and down.'
 	})
 end)
+run(function()
+	local InfJump
+	
+	InfJump = vape.Categories.Utility:CreateModule({
+		Name = 'InfJump',
+		Function = function(callback)
+			if callback then
+				_G.JumpHeight = 50
+
+				local function Action(Object, Function)
+					if Object ~= nil then
+						Function(Object)
+					end
+				end
+
+				InfJump.Connection = UIS.InputBegan:Connect(function(UserInput)
+					if UserInput.UserInputType == Enum.UserInputType.Keyboard and UserInput.KeyCode == Enum.KeyCode.Space then
+						Action(Player.Character and Player.Character:FindFirstChildOfClass("Humanoid"), function(self)
+							if self:GetState() == Enum.HumanoidStateType.Jumping or self:GetState() == Enum.HumanoidStateType.Freefall then
+								Action(self.Parent:FindFirstChild("HumanoidRootPart"), function(hrp)
+									hrp.Velocity = Vector3.new(0, _G.JumpHeight, 0)
+								end)
+							end
+						end)
+					end
+				end)
+			else
+				if InfJump.Connection then
+					InfJump.Connection:Disconnect()
+					InfJump.Connection = nil
+				end
+			end
+		end,
+		Tooltip = 'Lets you infinitely jump in mid-air.'
+	})
+end)
+
 	
