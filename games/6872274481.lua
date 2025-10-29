@@ -8490,4 +8490,31 @@ run(function()
 		List = WinEffectName
 	})
 end)
+run(function()
+	local connection
+	
+	vape.Categories.Blatant:CreateModule({
+		Name = 'Bounce',
+		Function = function(callback)
+			if callback then
+				connection = game:GetService("RunService").Heartbeat:Connect(function()
+					local player = game.Players.LocalPlayer
+					if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+						local hrp = player.Character.HumanoidRootPart
+						if hrp.Velocity.Y <= 0 then
+							-- Apply upward bounce
+							hrp.Velocity = Vector3.new(hrp.Velocity.X, 50, hrp.Velocity.Z)
+						end
+					end
+				end)
+			else
+				if connection then
+					connection:Disconnect()
+					connection = nil
+				end
+			end
+		end,
+		Tooltip = 'Makes you continuously bounce up and down.'
+	})
+end)
 	
