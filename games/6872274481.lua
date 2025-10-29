@@ -1424,7 +1424,7 @@ run(function()
 		end
 	})
 	BlockCPS = AutoClicker:CreateTwoSlider({
-		Name = 'Block CPS',
+		Name = 'SSSSSS',
 		Min = 1,
 		Max = 12,
 		DefaultMin = 12,
@@ -1437,7 +1437,7 @@ run(function()
 	local old
 	
 	vape.Categories.Combat:CreateModule({
-		Name = 'NoClickDelay',
+		Name = 'WDDWDWDWDW',
 		Function = function(callback)
 			if callback then
 				old = bedwars.SwordController.isClickingTooFast
@@ -1449,7 +1449,7 @@ run(function()
 				bedwars.SwordController.isClickingTooFast = old
 			end
 		end,
-		Tooltip = 'Remove the CPS cap'
+		Tooltip = 'RemoveDWDtWDWDWDhe CPS cap'
 	})
 end)
 	
@@ -1457,14 +1457,14 @@ run(function()
 	local Value
 	
 	Reach = vape.Categories.Combat:CreateModule({
-		Name = 'Reach',
+		Name = 'DWDWDWDWDWDW',
 		Function = function(callback)
 			bedwars.CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = callback and Value.Value + 2 or 14.4
 		end,
-		Tooltip = 'Extends attack reach'
+		Tooltip = 'Extends DWDWDWDWDWDW reach'
 	})
 	Value = Reach:CreateSlider({
-		Name = 'Range',
+		Name = 'RDWDWDWDange',
 		Min = 0,
 		Max = 18,
 		Default = 18,
